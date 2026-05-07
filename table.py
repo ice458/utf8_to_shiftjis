@@ -187,6 +187,16 @@ size_t utf8_to_shiftjis(const char *utf8_str, char *sjis_buffer, size_t sjis_buf
     return sjis_char_count; // 文字数を返す
 }
 
+// Shift-JISの先頭バイトからその文字のバイト長を返す（1 または 2）
+// 全角文字（漢字・かな等）は2、半角文字（ASCII・半角カナ等）は1
+// VFDの表示カラム幅とも一致する（全角=2カラム、半角=1カラム）
+static inline int sjis_char_byte_len(uint8_t c)
+{
+    if ((c >= 0x81 && c <= 0x9F) || (c >= 0xE0 && c <= 0xFC))
+        return 2;
+    return 1;
+}
+
 #endif
 """
     return c_code
